@@ -1,9 +1,10 @@
+#' @importFrom reticulate %as%
 #' @export
 gpt2 <- function(prompt = "Hello my name is",
                  model = c("124M", "355M", "774M"),
                  temperature = 1,
                  top_k = 0) {
-  model <- match.arg(model)
+  model <- match.arg(model, choices = c("124M", "355M", "774M"))
   install_gpt2_verify()
 
   batch_size <- 1

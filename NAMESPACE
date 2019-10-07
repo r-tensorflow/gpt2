@@ -3,3 +3,4 @@
 export(gpt2)
 export(gpt2_download)
 export(install_gpt2)
+importFrom(reticulate,"%as%")
