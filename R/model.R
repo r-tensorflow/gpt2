@@ -5,5 +5,9 @@ gtp2 <- function(model = c("124M", "355M", "774M")) {
 
   if (nrow(pins::pin_find(name = pin_name) == 0)) install_gtp2(model = model)
 
+
+  py_path <- system.file("python", package = "gpt2")
+  py_gpt2 <- import_from_path("gpt2", path = python_path)
+
   NULL
 }
