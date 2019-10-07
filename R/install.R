@@ -30,10 +30,10 @@ install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
   }
 
   extra_packages <- unique(c(
-    "fire>=0.1.3",
-    "regex>=2017.4.5",
-    "requests>=2.21.0",
-    "tqdm>=4.31.1"
+    "fire",
+    "regex",
+    "requests",
+    "tqdm"
   ))
 
   # perform the install
