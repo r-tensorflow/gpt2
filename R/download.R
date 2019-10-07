@@ -1,4 +1,10 @@
 #' @export
 gtp2_download <- function(model = c("124M", "355M", "774M")) {
   model <- match.arg(model)
+
+  model_base <- paste0("https://storage.googleapis.com/gpt-2/models/", model, "/")
+  model_files <- c("checkpoint", "encoder.json", "hparams.json", "model.ckpt.data-00000-of-00001", "model.ckpt.index", "model.ckpt.meta", "vocab.bpe")
+  model_urls <- paste0(model_base, model_files)
+
+  pins::pin(model_urls, name = paste0("gpt2", model, sep = "_"))
 }
