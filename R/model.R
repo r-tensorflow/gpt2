@@ -33,7 +33,7 @@ gpt2 <- function(model = c("124M", "355M", "774M"),
 
     output <- gtp2$sample_sequence(
       hparams = hparams,
-      length = params_length,
+      length = min(hparams_length, 1023 - length(context_tokens)),
       context = context,
       batch_size = batch_size,
       temperature = temperature,
