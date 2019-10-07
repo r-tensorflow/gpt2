@@ -1,5 +1,5 @@
 #' @export
-gtp2_download <- function(model = c("124M", "355M", "774M")) {
+gpt2_download <- function(model = c("124M", "355M", "774M")) {
   model <- match.arg(model)
 
   model_base <- paste0("https://storage.googleapis.com/gpt-2/models/", model, "/")

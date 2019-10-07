@@ -1,5 +1,5 @@
 #' @export
-install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
+install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
                          tensorflow = "default",
                          ...) {
@@ -23,7 +23,7 @@ install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
 
     # avoid DLL in use errors
     if (reticulate::py_available()) {
-      stop("You should call install_gtp2() only in a fresh ",
+      stop("You should call install_gpt2() only in a fresh ",
            "R session that has not yet initialized GPT-2 and TensorFlow (this is ",
            "to avoid DLL in use errors during installation)")
     }
