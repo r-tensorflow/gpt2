@@ -32,6 +32,8 @@ gpt2 <- function(prompt = "Hello my name is",
   with(tf$Session(graph = tf$Graph()) %as% sess, {
     context <- tf$placeholder(tf$int32, list(batch_size, NULL))
 
+    context_tokens <- encoder$encode(prompt)
+
     output <- gtp2$sample_sequence(
       hparams = hparams,
       length = min(hparams_length, 1023 - length(context_tokens)),
@@ -44,9 +46,6 @@ gpt2 <- function(prompt = "Hello my name is",
     saver <- tf$train$Saver()
     ckpt <- tf$train$latest_checkpoint(file.path(model_path, pin_name))
     saver$restore(sess, ckpt)
-
-    raw_text <- prompt
-    context_tokens <- encoder$encode(raw_text)
 
     out <- sess$run(output, feed_dict = reticulate::dict(
       context = list(context_tokens)
