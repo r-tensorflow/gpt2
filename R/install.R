@@ -1,3 +1,18 @@
+install_gpt2_deps <- function() {
+  c(
+    "fire",
+    "regex",
+    "requests",
+    "tqdm"
+  )
+}
+
+install_gp2_verify <- function() {
+  installed <- sapply(install_gpt2_deps(), function(e) reticulate::py_module_available(e))
+
+  if (!all(installed)) stop("GTP-2 dependencies are missing, considere running install_gpt2().")
+}
+
 #' @export
 install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
@@ -29,12 +44,7 @@ install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
     }
   }
 
-  extra_packages <- unique(c(
-    "fire",
-    "regex",
-    "requests",
-    "tqdm"
-  ))
+  extra_packages <- unique(install_gpt2_deps())
 
   # perform the install
   tensorflow::install_tensorflow(method = method,
