@@ -1,6 +1,6 @@
 #' @export
-gpt2 <- function(model = c("124M", "355M", "774M"),
-                 prompt = "Hello my name is",
+gpt2 <- function(prompt = "Hello my name is",
+                 model = c("124M", "355M", "774M"),
                  temperature = 1,
                  top_k = 0) {
   model <- match.arg(model)
