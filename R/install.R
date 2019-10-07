@@ -7,16 +7,27 @@ install_gpt2_deps <- function() {
   )
 }
 
-install_gp2_verify <- function() {
+install_gpt2_python_version <- function() {
+  sys <- reticulate::import("sys")
+  sys$version_info$major
+}
+
+install_gpt2_verify <- function() {
   installed <- sapply(install_gpt2_deps(), function(e) reticulate::py_module_available(e))
 
   if (!all(installed)) stop("GTP-2 dependencies are missing, considere running install_gpt2().")
+
+  sys <- reticulate::import("sys")
+  if (install_gpt2_python_version() <= 2) {
+    stop("Python 3 required, but Python ", sys$version_info$major, ".", sys$version_info$minor, " is installed.")
+  }
 }
 
 #' @export
 install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
                          tensorflow = "default",
+                         envname = "r-gpt2",
                          ...) {
 
   # verify method
@@ -52,5 +63,6 @@ install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                                  version = tensorflow,
                                  extra_packages = extra_packages,
                                  pip_ignore_installed = FALSE,
+                                 envname = envname,
                                  ...)
 }
