@@ -28,7 +28,7 @@ reticulate::use_condaenv("r-gpt2", required = TRUE)
 
 ## Getting Started
 
-To generate text using GPT-2, specify a `promt` and let the mode run,
+To generate text using GPT-2, specify a `prompt` and let the mode run,
 
 ```{r eval=FALSE}
 gpt2::gpt2("Hello my name is")
