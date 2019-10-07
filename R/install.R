@@ -1,18 +1,10 @@
 #' @export
 install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
-                         version = "default",
                          tensorflow = "default",
                          ...) {
 
   # verify method
-  method <- match.arg(method)
-
-  # resolve version
-  if (identical(version, "default"))
-    version <- ""
-  else
-    version <- paste0("==", version)
 
   # some special handling for windows
   if (identical(.Platform$OS.type, "windows")) {
@@ -25,7 +17,7 @@ install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
     if (!have_conda) {
       stop("GPT-2 installation failed (no conda binary found)\n\n",
            "Install Anaconda for Python 3.x (https://www.anaconda.com/download/#windows)\n",
-           "before installing Keras.",
+           "before installing GPT-2",
            call. = FALSE)
     }
 
@@ -38,11 +30,10 @@ install_gtp2 <- function(method = c("auto", "virtualenv", "conda"),
   }
 
   extra_packages <- unique(c(
-    paste0("keras", version),
     "fire>=0.1.3",
-    "regex==2017.4.5",
-    "requests==2.21.0",
-    "tqdm==4.31.1"
+    "regex>=2017.4.5",
+    "requests>=2.21.0",
+    "tqdm>=4.31.1"
   ))
 
   # perform the install
