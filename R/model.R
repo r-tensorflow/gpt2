@@ -53,6 +53,4 @@ gpt2 <- function(model = c("124M", "355M", "774M"),
 
     encoder$decode(out[1:nrow(out), length(context_tokens):ncol(out)])
   })
-
-  NULL
 }
