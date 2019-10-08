@@ -1,9 +1,7 @@
-#' @importFrom reticulate %as%
-#' @export
-gpt2 <- function(prompt = "Hello my name is",
-                 model = c("124M", "355M", "774M"),
-                 temperature = 1,
-                 top_k = 0) {
+gpt2_run <- function(prompt = "Hello my name is",
+                     model = c("124M", "355M", "774M"),
+                     temperature = 1,
+                     top_k = 0) {
   model <- match.arg(model, choices = c("124M", "355M", "774M"))
   install_gpt2_verify()
 
@@ -53,4 +51,18 @@ gpt2 <- function(prompt = "Hello my name is",
 
     encoder$decode(out[1:nrow(out), (length(context_tokens)+1):ncol(out)])
   })
+}
+
+#' @importFrom reticulate %as%
+#' @export
+gpt2 <- function(prompt = "Hello my name is",
+                 model = c("124M", "355M", "774M"),
+                 temperature = 1,
+                 top_k = 0) {
+  sapply(prompt, function(e) gpt2_single(
+    x,
+    model = model,
+    temperature = temperature,
+    top_k = top_k
+  ))
 }
