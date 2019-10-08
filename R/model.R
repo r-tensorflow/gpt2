@@ -59,8 +59,8 @@ gpt2 <- function(prompt = "Hello my name is",
                  model = c("124M", "355M", "774M"),
                  temperature = 1,
                  top_k = 0) {
-  sapply(prompt, function(e) gpt2_single(
-    x,
+  sapply(prompt, function(prompt) gpt2_run(
+    prompt,
     model = model,
     temperature = temperature,
     top_k = top_k
