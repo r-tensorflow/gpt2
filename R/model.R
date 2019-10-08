@@ -51,6 +51,6 @@ gpt2 <- function(prompt = "Hello my name is",
       context = list(context_tokens)
     ))
 
-    encoder$decode(out[1:nrow(out), length(context_tokens):ncol(out)])
+    encoder$decode(out[1:nrow(out), (length(context_tokens)+1):ncol(out)])
   })
 }
