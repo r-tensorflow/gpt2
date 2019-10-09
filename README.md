@@ -6,7 +6,7 @@ GTP-2: Language Models are Unsupervised Multitask Learners
 Install package from GitHub,
 
 ``` r
-remotes::install_github("javierluraschi/gpt2")
+remotes::install_github("r-tensorflow/gpt2")
 ```
 
 Followed by installing the GPT-2 runtime,
