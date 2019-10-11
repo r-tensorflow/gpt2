@@ -20,7 +20,7 @@ you can consider installing MiniConda followed by restarting your R
 session and ensuring conda is used:
 
 ``` r
-reticulate::use_condaenv("r-gpt2", required = TRUE)
+reticulate::use_condaenv(required = TRUE)
 ```
 
 ## Getting Started

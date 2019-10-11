@@ -26,7 +26,7 @@ install_gpt2_verify <- function() {
 #' @export
 install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
-                         envname = "r-gpt2",
+                         envname = NULL,
                          ...) {
 
   # verify method
