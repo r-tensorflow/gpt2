@@ -39,7 +39,7 @@ gpt2_run <- function(prompt = "Hello my name is",
       context = context,
       batch_size = batch_size,
       temperature = temperature,
-      top_k = top_k
+      top_k = as.integer(top_k)
     )
 
     saver <- tf$train$Saver()
