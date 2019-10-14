@@ -1,5 +1,6 @@
 gpt2_run <- function(prompt = "Hello my name is",
                      model = c("124M", "355M", "774M"),
+                     seed = NULL,
                      batch_size = 1,
                      total_tokens = NULL,
                      temperature = 1,
@@ -28,8 +29,13 @@ gpt2_run <- function(prompt = "Hello my name is",
     total_tokens <- hparams$n_ctx
   }
 
+  np <- reticulate::import("numpy")
   tf <- tensorflow::tf
+
   with(tf$Session(graph = tf$Graph()) %as% sess, {
+    np$random.seed(seed)
+    tf$set_random_seed(seed)
+
     context <- tf$placeholder(tf$int32, list(batch_size, NULL))
 
     context_tokens <- encoder$encode(prompt)
@@ -62,6 +68,8 @@ gpt2_run <- function(prompt = "Hello my name is",
 #' @param propmt The prompt to use to generate tokens from.
 #' @param model The size of the model to load: \code{"124M"}, \code{"355M"} or
 #'   \code{"774M"}.
+#' @param seed Integer seed for random number generators, fix seed to
+#'   reproduce results.
 #' @param batch_size Number of batches (only affects speed/memory).
 #' @param total_tokens Number of tokens in generated text, if \code{NULL} (default),
 #'   is determined by model hyperparameters.
@@ -74,6 +82,7 @@ gpt2_run <- function(prompt = "Hello my name is",
 #' @export
 gpt2 <- function(prompt = "Hello my name is",
                  model = c("124M", "355M", "774M"),
+                 seed = NULL,
                  batch_size = 1,
                  total_tokens = NULL,
                  temperature = 1,
@@ -81,6 +90,7 @@ gpt2 <- function(prompt = "Hello my name is",
   sapply(prompt, function(prompt) gpt2_run(
     prompt,
     model = model,
+    seed = seed,
     batch_size = batch_size,
     total_tokens = total_tokens,
     temperature = temperature,
