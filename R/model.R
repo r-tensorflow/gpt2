@@ -1,11 +1,11 @@
 gpt2_run <- function(prompt = "Hello my name is",
                      model = c("124M", "355M", "774M"),
+                     batch_size = 1,
+                     total_tokens = NULL,
                      temperature = 1,
                      top_k = 0) {
   model <- match.arg(model, choices = c("124M", "355M", "774M"))
   install_gpt2_verify()
-
-  batch_size <- 1
 
   pin_name <- paste("gpt2", model, sep = "_")
   if (nrow(pins::pin_find(name = pin_name, board = "local")) == 0) gpt2_download(model = model)
@@ -24,7 +24,9 @@ gpt2_run <- function(prompt = "Hello my name is",
   hparams_dict <- json$loads(hparams_json)
   hparams$override_from_dict(hparams_dict)
 
-  hparams_length <- hparams$n_ctx
+  if (is.null(total_tokens)) {
+    total_tokens <- hparams$n_ctx
+  }
 
   tf <- tensorflow::tf
   with(tf$Session(graph = tf$Graph()) %as% sess, {
@@ -34,7 +36,7 @@ gpt2_run <- function(prompt = "Hello my name is",
 
     output <- gtp2$sample_sequence(
       hparams = hparams,
-      length = min(hparams_length, 1023 - length(context_tokens)),
+      length = min(total_tokens, 1023 - length(context_tokens)),
       context = context,
       batch_size = batch_size,
       temperature = temperature,
