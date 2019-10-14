@@ -59,7 +59,7 @@ install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
   # perform the install
   tensorflow::install_tensorflow(method = method,
                                  conda = conda,
-                                 version = "1.12",
+                                 version = "1.14",
                                  extra_packages = extra_packages,
                                  pip_ignore_installed = FALSE,
                                  envname = envname,
