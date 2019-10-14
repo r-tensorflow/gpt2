@@ -1,8 +1,9 @@
 gpt2_run <- function(prompt = "Hello my name is",
-                     model = c("124M", "355M", "774M"),
+                     model = c("124M", "345M", "774M"),
+                     length = length,
                      temperature = 1,
                      top_k = 0) {
-  model <- match.arg(model, choices = c("124M", "355M", "774M"))
+  model <- match.arg(model, choices = c("124M", "345M", "774M"))
   install_gpt2_verify()
 
   batch_size <- 1
@@ -32,9 +33,10 @@ gpt2_run <- function(prompt = "Hello my name is",
 
     context_tokens <- encoder$encode(prompt)
 
+    cat(length, "\n", hparams_length, "\n", length(context_tokens), "\n")
     output <- gtp2$sample_sequence(
       hparams = hparams,
-      length = min(hparams_length, 1023 - length(context_tokens)),
+      length = if (is.null(length)) min(hparams_length, 1023 - length(context_tokens)) else length,
       context = context,
       batch_size = batch_size,
       temperature = temperature,
@@ -53,15 +55,33 @@ gpt2_run <- function(prompt = "Hello my name is",
   })
 }
 
+#' Sample from a model conditioning on input
+#'
+#' @param prompt Input string to condition on.
+#' @param model one of `c("124M", "345M", "774M")` (default is "124M")
+#' @param length Number of tokens in generated text, if NULL (default), is
+#' determined by model hyperparameters
+#' @param temperature Float value controlling randomness in boltzmann
+#' distribution. Lower temperature results in less random completions. As the
+#' temperature approaches zero, the model will become deterministic and
+#' repetitive. Higher temperature results in more random completions.
+#' Default: 1.
+#' @param top_k Integer value controlling diversity. 1 means only 1 word is
+#' considered for each step (token), resulting in deterministic completions,
+#' while 40 means 40 words are considered at each step. 0 (default) is a
+#' special setting meaning no restrictions. 40 generally is a good value.
+
 #' @importFrom reticulate %as%
 #' @export
 gpt2 <- function(prompt = "Hello my name is",
-                 model = c("124M", "355M", "774M"),
+                 model = c("124M", "345M", "774M"),
+                 length = NULL,
                  temperature = 1,
                  top_k = 0) {
   sapply(prompt, function(prompt) gpt2_run(
     prompt,
     model = model,
+    length = length,
     temperature = temperature,
     top_k = top_k
   ))
