@@ -33,7 +33,6 @@ gpt2_run <- function(prompt = "Hello my name is",
 
     context_tokens <- encoder$encode(prompt)
 
-    cat(length, "\n", hparams_length, "\n", length(context_tokens), "\n")
     output <- gtp2$sample_sequence(
       hparams = hparams,
       length = if (is.null(length)) min(hparams_length, 1023 - length(context_tokens)) else length,
