@@ -1,6 +1,6 @@
 gpt2_run <- function(prompt = "Hello my name is",
                      model = c("124M", "345M", "774M"),
-                     length = length,
+                     length = NULL,
                      temperature = 1,
                      top_k = 0) {
   model <- match.arg(model, choices = c("124M", "345M", "774M"))
