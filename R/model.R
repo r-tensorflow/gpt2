@@ -16,14 +16,13 @@ gpt2_run <- function(prompt = "Hello my name is",
 
   model_path <- dirname(dirname(pins::pin_get(name = pin_name, board = "local")[1]))
   encoder <- py_gpt2$encoder$get_encoder(pin_name, model_path)
-  gtp2 <- py_gpt2$gtp2
+  gpt2 <- py_gpt2$gpt2
 
-  hparams <- gtp2$default_hparams()
+  hparams <- gpt2$default_hparams()
 
   hparams_json <- paste0(readLines(file.path(model_path, pin_name, "hparams.json")), collapse = "\n")
   json <- reticulate::import("json")
-  hparams_dict <- json$loads(hparams_json)
-  hparams$override_from_dict(hparams_dict)
+  hparams <- json$loads(hparams_json)
 
   if (is.null(total_tokens)) {
     total_tokens <- hparams$n_ctx
@@ -32,15 +31,20 @@ gpt2_run <- function(prompt = "Hello my name is",
   np <- reticulate::import("numpy")
   tf <- tensorflow::tf
 
-  with(tf$Session(graph = tf$Graph()) %as% sess, {
-    np$random$seed(seed)
-    tf$set_random_seed(seed)
+  with(tf$compat$v1$Session(graph = tf$Graph()) %as% sess, {
+    tf$compat$v1$disable_eager_execution()
 
-    context <- tf$placeholder(tf$int32, list(batch_size, NULL))
+    if (!is.null(seed)) {
+      seed <- as.integer(seed)
+      np$random$seed(seed)
+      tf$compat$v1$set_random_seed(seed)
+    }
+
+    context <- tf$compat$v1$placeholder(tf$int32, list(batch_size, NULL))
 
     context_tokens <- encoder$encode(prompt)
 
-    output <- gtp2$sample_sequence(
+    output <- gpt2$sample_sequence(
       hparams = hparams,
       length = min(total_tokens, 1023 - length(context_tokens)),
       context = context,
@@ -49,8 +53,8 @@ gpt2_run <- function(prompt = "Hello my name is",
       top_k = top_k
     )
 
-    saver <- tf$train$Saver()
-    ckpt <- tf$train$latest_checkpoint(file.path(model_path, pin_name))
+    saver <- tf$compat$v1$train$Saver()
+    ckpt <- tf$compat$v1$train$latest_checkpoint(file.path(model_path, pin_name))
     saver$restore(sess, ckpt)
 
     out <- sess$run(output, feed_dict = reticulate::dict(
