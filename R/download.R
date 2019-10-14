@@ -1,3 +1,15 @@
+#' Download Model
+#'
+#' Downloads the pretrained models by size.
+#'
+#' @param model The size of the model to download: \code{"124M"}, \code{"355M"} or
+#'   \code{"774M"}.
+#'
+#' @details
+#'
+#' Download and caching is performed using the \code{pins} package and creates
+#' pins prefixed with \code{gpt2_}.
+#'
 #' @export
 gpt2_download <- function(model = c("124M", "355M", "774M")) {
   model <- match.arg(model, c("124M", "355M", "774M"))

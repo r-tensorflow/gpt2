@@ -55,15 +55,34 @@ gpt2_run <- function(prompt = "Hello my name is",
   })
 }
 
+#' Evaluate Model
+#'
+#' Evaluates the GPT-2 model which generates tokens based on the given prompt.
+#'
+#' @param propmt The prompt to use to generate tokens from.
+#' @param model The size of the model to load: \code{"124M"}, \code{"355M"} or
+#'   \code{"774M"}.
+#' @param batch_size Number of batches (only affects speed/memory).
+#' @param total_tokens Number of tokens in generated text, if \code{NULL} (default),
+#'   is determined by model hyperparameters.
+#' @param temperature Numeric value controlling randomness in boltzmann
+#'   distribution. Lower temperature results in less random completions. As the
+#'   temperature approaches zero, the model will become deterministic and
+#'   repetitive. Higher temperature results in more random completions.
+#'
 #' @importFrom reticulate %as%
 #' @export
 gpt2 <- function(prompt = "Hello my name is",
                  model = c("124M", "355M", "774M"),
+                 batch_size = 1,
+                 total_tokens = NULL,
                  temperature = 1,
                  top_k = 0) {
   sapply(prompt, function(prompt) gpt2_run(
     prompt,
     model = model,
+    batch_size = batch_size,
+    total_tokens = total_tokens,
     temperature = temperature,
     top_k = top_k
   ))

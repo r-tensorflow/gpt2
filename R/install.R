@@ -23,6 +23,21 @@ install_gpt2_verify <- function() {
   }
 }
 
+#' Install Dependencies
+#'
+#' Installs the python packages the GPT-2 model requires.
+#'
+#' @param method Installation method. By default, "auto" automatically finds
+#'   a method that will work in the local environment. See \code{?tensorflow::install_tensorflow}.
+#' @param conda Path to conda executable (or "auto" to find conda using the
+#'   \code{PATH} and other conventional install locations).
+#' @param envname Name of Python environment to install within.
+#' @param ... Additional parameters.
+#'
+#' @details
+#'
+#' This model also requires Python 3, Python 2 is unsupported.
+#'
 #' @export
 install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
