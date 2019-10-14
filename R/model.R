@@ -33,7 +33,7 @@ gpt2_run <- function(prompt = "Hello my name is",
   tf <- tensorflow::tf
 
   with(tf$Session(graph = tf$Graph()) %as% sess, {
-    np$random.seed(seed)
+    np$random$seed(seed)
     tf$set_random_seed(seed)
 
     context <- tf$placeholder(tf$int32, list(batch_size, NULL))
