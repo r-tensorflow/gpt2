@@ -9,18 +9,13 @@ Install package from GitHub,
 remotes::install_github("r-tensorflow/gpt2")
 ```
 
-Followed by installing the GPT-2 runtime,
+Followed by installing the GPT-2 runtime, we recommend usind MiniConda
+which you will need to install and then restart R session:
 
 ``` r
-gpt2::install_gpt2()
-```
+gpt2::install_gpt2(method = "conda", envname = "r-gpt2")
 
-**Note:** Python 3 is required. If Python 2 is installed in your system,
-you can consider installing MiniConda followed by restarting your R
-session and ensuring conda is used:
-
-``` r
-reticulate::use_condaenv(required = TRUE)
+reticulate::use_condaenv(required = TRUE, condaenv = "r-gpt2")
 ```
 
 ## Getting Started
