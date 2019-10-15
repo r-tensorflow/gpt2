@@ -5,7 +5,7 @@
 \title{Install Dependencies}
 \usage{
 install_gpt2(method = c("auto", "virtualenv", "conda"), conda = "auto",
-  envname = NULL, ...)
+  envname = NULL, version = "2.0", ...)
 }
 \arguments{
 \item{method}{Installation method. By default, "auto" automatically finds
@@ -15,6 +15,9 @@ a method that will work in the local environment. See \code{?tensorflow::install
 \code{PATH} and other conventional install locations).}
 
 \item{envname}{Name of Python environment to install within.}
+
+\item{version}{TensorFlow version to install. Specify "default" to install the CPU version of
+the latest release. Specify "gpu" to install the GPU version of the latest release.}
 
 \item{...}{Additional parameters.}
 }

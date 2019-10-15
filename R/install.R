@@ -32,6 +32,8 @@ install_gpt2_verify <- function() {
 #' @param conda Path to conda executable (or "auto" to find conda using the
 #'   \code{PATH} and other conventional install locations).
 #' @param envname Name of Python environment to install within.
+#' @param version TensorFlow version to install. Specify "default" to install the CPU version of
+#'   the latest release. Specify "gpu" to install the GPU version of the latest release.
 #' @param ... Additional parameters.
 #'
 #' @details
@@ -42,6 +44,7 @@ install_gpt2_verify <- function() {
 install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
                          conda = "auto",
                          envname = NULL,
+                         version = "2.0",
                          ...) {
 
   # verify method
@@ -74,7 +77,7 @@ install_gpt2 <- function(method = c("auto", "virtualenv", "conda"),
   # perform the install
   tensorflow::install_tensorflow(method = method,
                                  conda = conda,
-                                 version = "2.0",
+                                 version = version,
                                  extra_packages = extra_packages,
                                  pip_ignore_installed = FALSE,
                                  envname = envname,
