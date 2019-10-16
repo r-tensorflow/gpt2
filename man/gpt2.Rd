@@ -4,12 +4,12 @@
 \alias{gpt2}
 \title{Evaluate Model}
 \usage{
-gpt2(prompt = "Hello my name is", model = c("124M", "355M", "774M"),
+gpt2(prompt = "Hello my name is", model = c("124M", "345M", "774M"),
   seed = NULL, batch_size = 1, total_tokens = NULL,
-  temperature = 1, top_k = 0)
+  temperature = 1, top_k = 0, top_p = 1)
 }
 \arguments{
-\item{model}{The size of the model to load: \code{"124M"}, \code{"355M"} or
+\item{model}{The size of the model to load: \code{"124M"}, \code{"345M"} or
 \code{"774M"}.}
 
 \item{seed}{Integer seed for random number generators, fix seed to
@@ -24,6 +24,11 @@ is determined by model hyperparameters.}
 distribution. Lower temperature results in less random completions. As the
 temperature approaches zero, the model will become deterministic and
 repetitive. Higher temperature results in more random completions.}
+
+\item{top_k}{Integer value controlling diversity. 1 means only 1 word is considered
+for each step (token), resulting in deterministic completions.}
+
+\item{top_p}{cutoff for nucleus sampling.}
 
 \item{propmt}{The prompt to use to generate tokens from.}
 }

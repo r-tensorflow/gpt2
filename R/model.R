@@ -4,7 +4,8 @@ gpt2_run <- function(prompt = "Hello my name is",
                      batch_size = 1,
                      total_tokens = NULL,
                      temperature = 1,
-                     top_k = 0) {
+                     top_k = 0,
+                     top_p = 1) {
   model <- match.arg(model, choices = c("124M", "345M", "774M"))
   install_gpt2_verify()
 
@@ -50,7 +51,8 @@ gpt2_run <- function(prompt = "Hello my name is",
       context = context,
       batch_size = as.integer(batch_size),
       temperature = temperature,
-      top_k = as.integer(top_k)
+      top_k = as.integer(top_k),
+      top_p = as.integer(top_p)
     )
 
     saver <- tf$compat$v1$train$Saver()
@@ -84,6 +86,9 @@ gpt2_run <- function(prompt = "Hello my name is",
 #'   distribution. Lower temperature results in less random completions. As the
 #'   temperature approaches zero, the model will become deterministic and
 #'   repetitive. Higher temperature results in more random completions.
+#' @param top_k Integer value controlling diversity. 1 means only 1 word is considered
+#'   for each step (token), resulting in deterministic completions.
+#' @param top_p cutoff for nucleus sampling.
 #'
 #' @importFrom reticulate %as%
 #' @export
@@ -93,7 +98,8 @@ gpt2 <- function(prompt = "Hello my name is",
                  batch_size = 1,
                  total_tokens = NULL,
                  temperature = 1,
-                 top_k = 0) {
+                 top_k = 0,
+                 top_p = 1) {
   sapply(prompt, function(prompt) gpt2_run(
     prompt,
     model = model,
@@ -101,6 +107,7 @@ gpt2 <- function(prompt = "Hello my name is",
     batch_size = batch_size,
     total_tokens = total_tokens,
     temperature = temperature,
-    top_k = top_k
+    top_k = top_k,
+    top_p =  as.integer(top_p)
   ))
 }
