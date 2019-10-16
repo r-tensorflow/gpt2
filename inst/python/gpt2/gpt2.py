@@ -244,10 +244,13 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
 
         def cond(*args):
             return True
+            
+        for key in hparams:
+            hparams[key] = int(hparams[key])
 
         _, _, tokens = tf.while_loop(
             cond=cond, body=body,
-            maximum_iterations=length - 1,
+            maximum_iterations=int(length - 1),
             loop_vars=[
                 past,
                 prev,
