@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import fire
 import json
 import os
@@ -14,6 +16,7 @@ def interact_model(
     length=None,
     temperature=1,
     top_k=0,
+    top_p=1,
     models_dir='models',
 ):
     """
@@ -59,7 +62,7 @@ def interact_model(
             hparams=hparams, length=length,
             context=context,
             batch_size=batch_size,
-            temperature=temperature, top_k=top_k
+            temperature=temperature, top_k=top_k, top_p=top_p
         )
 
         saver = tf.train.Saver()

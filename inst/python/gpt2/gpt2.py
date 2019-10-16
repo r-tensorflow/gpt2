@@ -66,13 +66,13 @@ def attention_mask(nd, ns, *, dtype):
 
 def attn(x, scope, n_state, *, past, hparams):
     assert x.shape.ndims == 3  # Should be [batch, sequence, features]
-    assert n_state % hparams["n_head"] == 0
+    assert n_state % hparams.n_head == 0
     if past is not None:
         assert past.shape.ndims == 5  # Should be [batch, 2, heads, sequence, features], where 2 is [k, v]
 
     def split_heads(x):
         # From [batch, sequence, features] to [batch, heads, sequence, features]
-        return tf.transpose(split_states(x, hparams["n_head"]), [0, 2, 1, 3])
+        return tf.transpose(split_states(x, hparams.n_head), [0, 2, 1, 3])
 
     def merge_heads(x):
         # Reverse of split_heads
@@ -128,7 +128,7 @@ def block(x, scope, *, past, hparams):
         return x, present
 
 def past_shape(*, hparams, batch_size=None, sequence=None):
-    return [batch_size, hparams["n_layer"], 2, hparams["n_head"], sequence, hparams["n_embd"] // hparams["n_head"] ]
+    return [batch_size, hparams.n_layer, 2, hparams.n_head, sequence, hparams.n_embd // hparams.n_head]
 
 def expand_tile(value, size):
     """Add a new axis of given size."""
@@ -147,17 +147,17 @@ def model(hparams, X, past=None, scope='model', reuse=False):
         results = {}
         batch, sequence = shape_list(X)
 
-        wpe = tf.compat.v1.get_variable('wpe', [hparams["n_ctx"], hparams["n_embd"] ],
+        wpe = tf.compat.v1.get_variable('wpe', [hparams.n_ctx, hparams.n_embd],
                              initializer=tf.random_normal_initializer(stddev=0.01))
-        wte = tf.compat.v1.get_variable('wte', [hparams["n_vocab"], hparams["n_embd"] ],
+        wte = tf.compat.v1.get_variable('wte', [hparams.n_vocab, hparams.n_embd],
                              initializer=tf.random_normal_initializer(stddev=0.02))
         past_length = 0 if past is None else tf.shape(past)[-2]
         h = tf.gather(wte, X) + tf.gather(wpe, positions_for(X, past_length))
 
         # Transformer
         presents = []
-        pasts = tf.unstack(past, axis=1) if past is not None else [None] * hparams["n_layer"]
-        assert len(pasts) == hparams["n_layer"]
+        pasts = tf.unstack(past, axis=1) if past is not None else [None] * hparams.n_layer
+        assert len(pasts) == hparams.n_layer
         for layer, past in enumerate(pasts):
             h, present = block(h, 'h%d' % layer, past=past, hparams=hparams)
             presents.append(present)
@@ -165,12 +165,12 @@ def model(hparams, X, past=None, scope='model', reuse=False):
         h = norm(h, 'ln_f')
 
         # Language model loss.  Do tokens <n predict token n?
-        h_flat = tf.reshape(h, [batch*sequence, hparams["n_embd"] ])
+        h_flat = tf.reshape(h, [batch*sequence, hparams.n_embd])
         logits = tf.matmul(h_flat, wte, transpose_b=True)
-        logits = tf.reshape(logits, [batch, sequence, hparams["n_vocab"] ])
+        logits = tf.reshape(logits, [batch, sequence, hparams.n_vocab])
         results['logits'] = logits
         return results
-
+        
 def top_k_logits(logits, k):
     if k == 0:
         # no truncation
@@ -191,7 +191,25 @@ def top_k_logits(logits, k):
     )
 
 
-def sample_sequence(*, hparams, length, start_token=None, batch_size=None, context=None, temperature=1, top_k=0):
+def top_p_logits(logits, p):
+    """Nucleus sampling"""
+    batch, _ = logits.shape.as_list()
+    sorted_logits = tf.sort(logits, direction='DESCENDING', axis=-1)
+    cumulative_probs = tf.cumsum(tf.nn.softmax(sorted_logits, axis=-1), axis=-1)
+    indices = tf.stack([
+        tf.range(0, batch),
+        # number of indices to include
+        tf.maximum(tf.reduce_sum(tf.cast(cumulative_probs <= p, tf.int32), axis=-1) - 1, 0),
+    ], axis=-1)
+    min_values = tf.gather_nd(sorted_logits, indices)
+    return tf.where(
+        logits < min_values,
+        tf.ones_like(logits) * -1e10,
+        logits,
+    )
+
+
+def sample_sequence(*, hparams, length, start_token=None, batch_size=None, context=None, temperature=1, top_k=0, top_p=1):
     if start_token is None:
         assert context is not None, 'Specify exactly one of start_token and context!'
     else:
@@ -199,11 +217,11 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
         context = tf.fill([batch_size, 1], start_token)
 
     def step(hparams, tokens, past=None):
-        lm_output = model(hparams=hparams, X=tokens, past=past, reuse=tf.compat.v1.AUTO_REUSE)
+        lm_output = model.model(hparams=hparams, X=tokens, past=past, reuse=tf.compat.v1.AUTO_REUSE)
 
-        logits = lm_output['logits'][:, :, :hparams["n_vocab"] ]
+        logits = lm_output['logits'][:, :, :hparams.n_vocab]
         presents = lm_output['present']
-        presents.set_shape(past_shape(hparams=hparams, batch_size=batch_size))
+        presents.set_shape(model.past_shape(hparams=hparams, batch_size=batch_size))
         return {
             'logits': logits,
             'presents': presents,
@@ -214,6 +232,7 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
             next_outputs = step(hparams, prev, past=past)
             logits = next_outputs['logits'][:, -1, :]  / tf.compat.v1.to_float(temperature)
             logits = top_k_logits(logits, k=top_k)
+            logits = top_p_logits(logits, p=top_p)
             samples = tf.compat.v1.multinomial(logits, num_samples=1, output_dtype=tf.int32)
             return [
                 next_outputs['presents'] if past is None else tf.concat([past, next_outputs['presents']], axis=-2),
@@ -225,20 +244,17 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
 
         def cond(*args):
             return True
-            
-        for key in hparams:
-            hparams[key] = int(hparams[key])
 
         _, _, tokens = tf.while_loop(
             cond=cond, body=body,
-            maximum_iterations=int(length - 1),
+            maximum_iterations=length - 1,
             loop_vars=[
                 past,
                 prev,
                 output
             ],
             shape_invariants=[
-                tf.TensorShape(past_shape(hparams=hparams, batch_size=batch_size)),
+                tf.TensorShape(model.past_shape(hparams=hparams, batch_size=batch_size)),
                 tf.TensorShape([batch_size, None]),
                 tf.TensorShape([batch_size, None]),
             ],
