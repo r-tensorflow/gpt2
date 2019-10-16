@@ -48,9 +48,9 @@ gpt2_run <- function(prompt = "Hello my name is",
       hparams = hparams,
       length = min(total_tokens, 1023 - length(context_tokens)),
       context = context,
-      batch_size = batch_size,
+      batch_size = as.integer(batch_size),
       temperature = temperature,
-      top_k = top_k
+      top_k = as.integer(top_k)
     )
 
     saver <- tf$compat$v1$train$Saver()
@@ -61,7 +61,10 @@ gpt2_run <- function(prompt = "Hello my name is",
       context = list(context_tokens)
     ))
 
-    encoder$decode(out[1:nrow(out), (length(context_tokens)+1):ncol(out)])
+    generated <- out[1:nrow(out), (length(context_tokens)+1):ncol(out)]
+    # workaround to avoid "int is not iterable" error when length == 1
+    decoded <- encoder$decode(if (length(generated) == 1) c(generated, generated) else generated)
+    if (length(generated) == 1) strsplit(decoded, "")[[1]][1] else decoded
   })
 }
 
