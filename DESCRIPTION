@@ -3,7 +3,7 @@ Type: Package
 Title: R Interface to 'GPT-2'
 Version: 0.1.0
 Authors@R: c(
-  person("Daniel", "Falbel", role = c("ctb", "cph", "cre"), email = "daniel@rstudio.com"),
+  person("Javier", "Luraschi", role = c("aut", "cre"), email = "javier@rstudio.com"),
   person(family = "OpenAI", role = c("ctb", "cph"),
          comment = "Pretrained Model")
   )
