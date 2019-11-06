@@ -1,12 +1,12 @@
 gpt2_run <- function(prompt = "Hello my name is",
-                     model = c("124M", "345M", "774M"),
+                     model = c("124M", "355M", "774M", "1558M"),
                      seed = NULL,
                      batch_size = 1,
                      total_tokens = NULL,
                      temperature = 1,
                      top_k = 0,
                      top_p = 1) {
-  model <- match.arg(model, choices = c("124M", "345M", "774M"))
+  model <- match.arg(model, choices = c("124M", "355M", "774M", "1558M"))
   install_gpt2_verify()
 
   pin_name <- paste("gpt2", model, sep = "_")
@@ -75,8 +75,8 @@ gpt2_run <- function(prompt = "Hello my name is",
 #' Evaluates the GPT-2 model which generates tokens based on the given prompt.
 #'
 #' @param propmt The prompt to use to generate tokens from.
-#' @param model The size of the model to load: \code{"124M"}, \code{"345M"} or
-#'   \code{"774M"}.
+#' @param model The size of the model to load: \code{"124M"}, \code{"355M"},
+#'   \code{"774M"} or \code{"1558M"}.
 #' @param seed Integer seed for random number generators, fix seed to
 #'   reproduce results.
 #' @param batch_size Number of batches (only affects speed/memory).
@@ -93,7 +93,7 @@ gpt2_run <- function(prompt = "Hello my name is",
 #' @importFrom reticulate %as%
 #' @export
 gpt2 <- function(prompt = "Hello my name is",
-                 model = c("124M", "345M", "774M"),
+                 model = c("124M", "345M", "774M", "1558M"),
                  seed = NULL,
                  batch_size = 1,
                  total_tokens = NULL,

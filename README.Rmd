@@ -44,3 +44,36 @@ Lusa Tristanowni ( English, u.5 V Bugwedorf, Ch. I 33) is the spiritual party le
 
 he half Finnish mane of Burke's, partly Ma Latvialohar Sprfoundtailhustt (Burke WM JUR OVB 1938). Taymok is the birthplace of Maiak, Tartary. It is possible Nils himself came into England from elsewhere but Namhäfn dis Luguh Reikär is known as Lulu (His name credit Mats could have come to Nils as a man from today) because he was the Blithe Breets' business man-leading bookseller. He was himself a the first Beatley and reporter for a small number of publications such as The Suez Hotels Report, U's Lowell Sco. Ltd., The Times Herald-Globe Courier, and The Argus Times. There is SEARCH CONNECTION ASSOCIATED PRESS the sczo tyoot of commercial affairs which this had no place in is actual hard work by
 ```
+
+## Google Cloud
+
+You can use [cloudml](https://github.com/rstudio/cloudml) to run this model in Google Cloud as follows. First, create a `cloudml.yml` file:
+
+```yml
+customCommands:
+  - ["pip3", "install", "tensorflow>=2.0", "fire", "regex", "requests", "tqdm"]
+
+trainingInput:
+  scaleTier: STANDARD
+  pythonVersion: "3.5"
+  runtimeVersion: "1.4"
+```
+
+Followed by the following `train.R` script:
+
+```r
+reticulate::use_python(Sys.which('python3'), required = TRUE)
+
+reticulate::py_config()
+tensorflow::tf_config()
+
+result <- gpt2::gpt2()
+
+writeLines(result, "gpt2-result.txt")
+```
+
+You can then train using:
+
+```r
+cloudml::cloudml_train("train.R")
+```

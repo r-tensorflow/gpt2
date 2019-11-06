@@ -2,8 +2,8 @@
 #'
 #' Downloads the pretrained models by size.
 #'
-#' @param model The size of the model to download: \code{"124M"}, \code{"355M"} or
-#'   \code{"774M"}.
+#' @param model The size of the model to download: \code{"124M"}, \code{"355M"},
+#'   \code{"774M"} or \code{"1558M"}.
 #'
 #' @details
 #'
@@ -11,8 +11,8 @@
 #' pins prefixed with \code{gpt2_}.
 #'
 #' @export
-gpt2_download <- function(model = c("124M", "355M", "774M")) {
-  model <- match.arg(model, c("124M", "355M", "774M"))
+gpt2_download <- function(model = c("124M", "355M", "774M", "1558M")) {
+  model <- match.arg(model, c("124M", "355M", "774M", "1558M"))
 
   model_base <- paste0("https://storage.googleapis.com/gpt-2/models/", model, "/")
   model_files <- c("checkpoint", "encoder.json", "hparams.json", "model.ckpt.data-00000-of-00001", "model.ckpt.index", "model.ckpt.meta", "vocab.bpe")
