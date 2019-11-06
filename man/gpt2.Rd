@@ -4,13 +4,13 @@
 \alias{gpt2}
 \title{Evaluate Model}
 \usage{
-gpt2(prompt = "Hello my name is", model = c("124M", "345M", "774M"),
-  seed = NULL, batch_size = 1, total_tokens = NULL,
+gpt2(prompt = "Hello my name is", model = c("124M", "345M", "774M",
+  "1558M"), seed = NULL, batch_size = 1, total_tokens = NULL,
   temperature = 1, top_k = 0, top_p = 1)
 }
 \arguments{
-\item{model}{The size of the model to load: \code{"124M"}, \code{"345M"} or
-\code{"774M"}.}
+\item{model}{The size of the model to load: \code{"124M"}, \code{"355M"},
+\code{"774M"} or \code{"1558M"}.}
 
 \item{seed}{Integer seed for random number generators, fix seed to
 reproduce results.}

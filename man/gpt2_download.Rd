@@ -4,11 +4,11 @@
 \alias{gpt2_download}
 \title{Download Model}
 \usage{
-gpt2_download(model = c("124M", "355M", "774M"))
+gpt2_download(model = c("124M", "355M", "774M", "1558M"))
 }
 \arguments{
-\item{model}{The size of the model to download: \code{"124M"}, \code{"355M"} or
-\code{"774M"}.}
+\item{model}{The size of the model to download: \code{"124M"}, \code{"355M"},
+\code{"774M"} or \code{"1558M"}.}
 }
 \description{
 Downloads the pretrained models by size.
